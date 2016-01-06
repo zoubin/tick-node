@@ -1,25 +1,22 @@
-var util = require('util')
-var debug = util.debuglog('nexttick')
+var debugBind = require('./lib/bind')
 
-var NEXT = process.nextTick.bind(process)
-
-var n = 0
-var sameTick = false
-
-process.debugNextTick = process.debugNextTick || function nextTick() {
-  if (!sameTick) {
-    ++n
-    sameTick = true
-    NEXT(function () {
-      sameTick = false
-      debug('TICK', n)
-    })
+exports.bind = bind
+function bind() {
+  if (isDebug()) {
+    return debugBind(process.nextTick, process)
   }
-  NEXT.apply(null, arguments)
+
+  return process.nextTick.bind(process)
 }
 
-module.exports = process.debugNextTick
-module.exports.polyfill = function () {
-  process.nextTick = process.debugNextTick
+exports.polyfill = polyfill
+function polyfill() {
+  if (isDebug()) {
+    process.nextTick = debugBind(process.nextTick, process)
+  }
+}
+
+function isDebug() {
+  return /\bnexttick\b/.test(process.env.NODE_DEBUG || '')
 }
 

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && tap test/*.js",
-    "lint": "eslint index.js test/*.js",
+    "lint": "eslint index.js lib/*.js test/*.js",
     "coveralls": "COVERALLS_REPO_TOKEN=REPO_TOKEN npm test"
   },
   "repository": {

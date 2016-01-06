@@ -1,2 +1,6 @@
 # debug-nexttick
-Print the tick number in debug mode
+Print the tick number in debug mode.
+
+## Usage
+
+
