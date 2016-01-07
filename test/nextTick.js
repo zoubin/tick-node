@@ -1,4 +1,4 @@
-var nextTick = require('..').getNextTick().bind(process)
+var nextTick = require('..')
 
 var test = require('tap').test
 

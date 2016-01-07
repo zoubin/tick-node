@@ -6,14 +6,14 @@ debugNextTick.polyfill()
 test('polyfill', function (t) {
   t.plan(4)
 
-  t.equal(process._tick, undefined, 'no debug')
+  t.equal(process._tick, 0, 'no debug')
 
   process.nextTick(function () {
     process.env.NODE_DEBUG = 'nexttick'
     debugNextTick.polyfill()
     t.equal(process._tick, 0, 'initialized')
 
-    process._nextTick(function () {
+    process.nextTick(function () {
       t.equal(process._tick, 1, 'first tick')
 
       var nextTick = process.nextTick

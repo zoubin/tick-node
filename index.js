@@ -1,67 +1,39 @@
 var util = require('util')
 var debug = util.debuglog('nexttick')
 
-exports.getNextTick = getNextTick
+var nextTick = getNextTick()
 
-exports.bind = function () {
-  return debugNextTick().bind(process)
-}
+module.exports = exports = nextTick
 
 exports.polyfill = function () {
-  process._nextTick = debugNextTick()
+  if (process.env.NODE_DEBUG && /\bnexttick\b/.test(process.env.NODE_DEBUG)) {
+    process.nextTick = nextTick
+  }
 }
 
 function getNextTick() {
+  // already hacked
   if (process._tick != null) {
     return process.nextTick
   }
 
   process._tick = 0
   var nativeNextTick = process.nextTick
-  var sameTick = false
+  var ticking = false
 
-  function nextTick(cb) {
-    if (cb._tickSync) return
-
-    if (!sameTick) {
+  return function () {
+    if (!ticking) {
       ++process._tick
-      sameTick = true
-      nativeNextTick.call(process, wrap(function () {
-        sameTick = false
-        debug(process._tick)
-      }))
+      ticking = true
+      nativeNextTick(function () {
+        debug('---------- TICK %d ----------', process._tick)
+        // Do not put this statement before the one above
+        // That would cause `nextTick` calling itself forever
+        ticking = false
+      })
     }
 
-    nativeNextTick.call(process, wrap.apply(null, arguments))
+    nativeNextTick.apply(null, arguments)
   }
-
-  return nextTick
-}
-
-function wrap(cb) {
-  var args = slice(arguments, 1)
-  function task() {
-    task._tickSync = false
-    cb.apply(this, args)
-  }
-  task._tickSync = true
-
-  return task
-}
-
-function slice(o, from, to) {
-  return Array.prototype.slice.call(o, from, to)
-}
-
-function debugNextTick() {
-  if (isDebug()) {
-    return getNextTick()
-  }
-
-  return process.nextTick
-}
-
-function isDebug(debug) {
-  return /\bnexttick\b/.test(process.env.NODE_DEBUG || '')
 }
 
