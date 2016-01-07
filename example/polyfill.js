@@ -1,5 +1,11 @@
 require('..').polyfill()
 
+console.log(
+process._tick == null
+)
+
+return
+
 var n = 3
 
 var rs = require('stream').Readable()

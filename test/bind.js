@@ -1,34 +1,20 @@
-var nextTick = require('../lib/bind')(process.nextTick, process)
-
 var test = require('tap').test
+var debugNextTick = require('..')
 
-test('wrap', function (t) {
-  t.plan(6)
+test('bind', function (t) {
+  t.plan(2)
+
+  var nextTick = debugNextTick.bind()
+
+  t.equal(process._tick, undefined)
 
   nextTick(function () {
-    t.equal(nextTick.debug, 1)
+    process.env.NODE_DEBUG = 'nexttick'
+    nextTick = debugNextTick.bind()
+    nextTick(function () {
+      t.equal(process._tick, 1)
+    })
   })
-
-  nextTick(function () {
-    t.equal(nextTick.debug, 1)
-  })
-
-  setTimeout(function() {
-    nextTick(function () {
-      t.equal(nextTick.debug, 2)
-    })
-    nextTick(function () {
-      t.equal(nextTick.debug, 2)
-    })
-  }, 10)
-
-  setTimeout(function() {
-    nextTick(function () {
-      t.equal(nextTick.debug, 3)
-      nextTick(function () {
-        t.equal(nextTick.debug, 4)
-      })
-    })
-  }, 20)
 })
+
 

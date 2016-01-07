@@ -1,22 +1,50 @@
-var debugBind = require('./lib/bind')
+var util = require('util')
+var debug = util.debuglog('nexttick')
 
-exports.bind = bind
-function bind() {
-  if (isDebug()) {
-    return debugBind(process.nextTick, process)
-  }
+exports.getNextTick = getNextTick
 
-  return process.nextTick.bind(process)
+exports.bind = function () {
+  return debugNextTick().bind(process)
 }
 
-exports.polyfill = polyfill
-function polyfill() {
-  if (isDebug()) {
-    process.nextTick = debugBind(process.nextTick, process)
-  }
+exports.polyfill = function () {
+  process._nextTick = debugNextTick()
 }
 
-function isDebug() {
+function getNextTick() {
+  if (process._tick != null) {
+    return process.nextTick
+  }
+
+  process._tick = 0
+  var nativeNextTick = process.nextTick
+  var sameTick = false
+
+  function nextTick() {
+    if (!sameTick) {
+      ++process._tick
+      sameTick = true
+      nativeNextTick.call(process, function () {
+        sameTick = false
+        console.log(process._tick);
+        debug(process._tick)
+      })
+    }
+    nativeNextTick.apply(process, arguments)
+  }
+
+  return nextTick
+}
+
+function debugNextTick() {
+  if (isDebug()) {
+    return getNextTick()
+  }
+
+  return process.nextTick
+}
+
+function isDebug(debug) {
   return /\bnexttick\b/.test(process.env.NODE_DEBUG || '')
 }
 
