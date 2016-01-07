@@ -1,4 +1,7 @@
 # debug-nexttick
+[![version](https://img.shields.io/npm/v/debug-nexttick.svg)](https://www.npmjs.org/package/debug-nexttick)
+[![status](https://travis-ci.org/zoubin/debug-nexttick.svg?branch=master)](https://travis-ci.org/zoubin/debug-nexttick)
+
 Print the tick number in debug mode.
 
 ## Usage
