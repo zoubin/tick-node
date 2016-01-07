@@ -20,20 +20,37 @@ function getNextTick() {
   var nativeNextTick = process.nextTick
   var sameTick = false
 
-  function nextTick() {
+  function nextTick(cb) {
+    if (cb._tickSync) return
+
     if (!sameTick) {
       ++process._tick
       sameTick = true
-      nativeNextTick.call(process, function () {
+      nativeNextTick.call(process, wrap(function () {
         sameTick = false
-        console.log(process._tick);
         debug(process._tick)
-      })
+      }))
     }
-    nativeNextTick.apply(process, arguments)
+
+    nativeNextTick.call(process, wrap.apply(null, arguments))
   }
 
   return nextTick
+}
+
+function wrap(cb) {
+  var args = slice(arguments, 1)
+  function task() {
+    task._tickSync = false
+    cb.apply(this, args)
+  }
+  task._tickSync = true
+
+  return task
+}
+
+function slice(o, from, to) {
+  return Array.prototype.slice.call(o, from, to)
 }
 
 function debugNextTick() {
