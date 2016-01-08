@@ -10,9 +10,8 @@ program
   .option('-C, --no-color', 'Suppress colorful splitters.')
   .parse(process.argv)
 
-var env = process.env.NODE_DEBUG || ''
-env += (env ? ',' : '') + 'nexttick'
-process.env.NODE_DEBUG = env
+var env = [process.env.NODE_DEBUG, 'nexttick'].filter(Boolean)
+process.env.NODE_DEBUG = env.join(',')
 
 require('..').polyfill({ color: program.color })
 

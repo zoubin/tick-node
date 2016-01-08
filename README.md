@@ -1,6 +1,6 @@
-# debug-nexttick
-[![version](https://img.shields.io/npm/v/debug-nexttick.svg)](https://www.npmjs.org/package/debug-nexttick)
-[![status](https://travis-ci.org/zoubin/debug-nexttick.svg?branch=master)](https://travis-ci.org/zoubin/debug-nexttick)
+# tick-node
+[![version](https://img.shields.io/npm/v/tick-node.svg)](https://www.npmjs.org/package/tick-node)
+[![status](https://travis-ci.org/zoubin/tick-node.svg?branch=master)](https://travis-ci.org/zoubin/tick-node)
 
 Print the tick number in debug mode.
 
@@ -9,7 +9,7 @@ Print the tick number in debug mode.
 ### Command line
 
 ```bash
-npm install -g debug-nexttick
+npm install -g tick-node
 
 tick-node -V
 
@@ -89,7 +89,7 @@ STREAM 59690: cleanup
 [example/api.js](example/api.js):
 
 ```js
-require('debug-nexttick').polyfill()
+require('tick-node').polyfill()
 
 var n = 3
 
@@ -160,7 +160,7 @@ STREAM 59678: cleanup
 ## API
 
 ```js
-require('debug-nexttick').polyfill()
+require('tick-node').polyfill()
 
 ```
 
