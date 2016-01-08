@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Print the tick number in debug mode",
   "main": "index.js",
+  "bin": {
+    "tick-node": "./bin/cmd.js"
+  },
   "scripts": {
     "test": "npm run lint && tap test/*.js",
     "lint": "eslint index.js lib/*.js test/*.js",
@@ -25,5 +28,8 @@
   "devDependencies": {
     "eslint": "^1.10.1",
     "tap": "^5.0.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
   }
 }
